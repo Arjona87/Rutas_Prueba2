@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutas FIFA 2026 — Guadalajara</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(to right, #00AC00, #008000);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            font-size: 2rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+        }
+
+        .header-title p {
+            font-size: 0.875rem;
+            color: #fecaca;
+        }
+
+        .header-badge {
+            background: white;
+            color: #00AC00;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.65rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .sidebar {
+            position: static;
+            height: auto;
+            width: 100%;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title-icon {
+            color: #00AC00;
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            background: white;
+            color: #1e293b;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #00AC00;
+            border-color: #00AC00;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #00AC00;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+        }
+
+        .btn:hover {
+            background: #008000;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .legend {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .legend-title {
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .legend-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .map-container {
+            border-radius: 0.65rem;
+            overflow: hidden;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 1024px) {
+            .map-container {
+                height: 400px;
+            }
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .routes-section {
+            display: none;
+        }
+
+        .routes-section.active {
+            display: block;
+        }
+
+        .routes-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .route-card {
+            border-left: 4px solid;
+            margin-bottom: 1rem;
+            background: white;
+            border-radius: 0.65rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+        }
+
+        .route-card.principal {
+            border-left-color: #00AC00;
+        }
+
+        .route-card.secundaria {
+            border-left-color: #3534CE;
+        }
+
+        .route-card.terciaria {
+            border-left-color: #FE00D2;
+        }
+
+        .route-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .route-card.principal .route-title {
+            color: #00AC00;
+        }
+
+        .route-card.secundaria .route-title {
+            color: #3534CE;
+        }
+
+        .route-card.terciaria .route-title {
+            color: #FE00D2;
+        }
+
+        .route-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .route-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .route-description {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .route-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .route-card.principal .route-link {
+            background: #00AC00;
+        }
+
+        .route-card.principal .route-link:hover {
+            background: #008000;
+        }
+
+        .route-card.secundaria .route-link {
+            background: #3534CE;
+        }
+
+        .route-card.secundaria .route-link:hover {
+            background: #2a2aa0;
+        }
+
+        .route-card.terciaria .route-link {
+            background: #FE00D2;
+        }
+
+        .route-card.terciaria .route-link:hover {
+            background: #E600B8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #94a3b8;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <div class="header-icon">🗺️</div>
+                <div class="header-title">
+                    <h1>Rutas FIFA 2026</h1>
+                    <p>Guadalajara — Plan de Seguridad en Traslados</p>
+                </div>
+            </div>
+            <div class="header-badge">GUADALAJARA · JALISCO · MÉXICO</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-title">
+                        <span class="card-title-icon">📍</span>
+                        Seleccionar Ruta
+                    </div>
+
+                    <div class="form-group">
+                        <label for="origen">Punto de Origen</label>
+                        <select id="origen">
+                            <option value="">Selecciona el origen</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destino">Punto de Destino</label>
+                        <select id="destino">
+                            <option value="">Selecciona el destino</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" onclick="buscarRutas()">
+                        ➜ Ver Rutas
+                    </button>
+
+                    <div class="legend">
+                        <div class="legend-title">Leyenda de Rutas</div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00AC00;"></div>
+                            <span>Ruta Principal</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #3534CE;"></div>
+                            <span>Ruta Secundaria</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #FE00D2;"></div>
+                            <span>Ruta Terciaria</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div>
+                <!-- Mapa -->
+                <div class="card map-container">
+                    <div id="map"></div>
+                </div>
+
+                <!-- Rutas -->
+                <div id="routesSection" class="routes-section">
+                    <div class="routes-title" id="routesTitle"></div>
+                    <div id="routesContainer"></div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="card">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🗺️</div>
+                        <div class="empty-state-text">Selecciona una ruta</div>
+                        <div class="empty-state-text" style="font-size: 0.75rem; margin-top: 0.5rem;">Elige un punto de origen y destino para ver las rutas disponibles con instrucciones detalladas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // Datos de ubicaciones
+        const UBICACIONES = {
+            'aeropuerto_gdl': {
+                nombre: '✈️ Aeropuerto GDL',
+                lat: 20.52666372,
+                lng: -103.2991887
+            },
+            'base_aerea': {
+                nombre: '🛡️ Base Aérea Militar',
+                lat: 20.74397913,
+                lng: -103.4477182
+            },
+            'aeropuerto_pvr': {
+                nombre: '✈️ Aeropuerto Puerto Vallarta',
+                lat: 20.67700735,
+                lng: -105.249859
+            },
+            'hyatt': {
+                nombre: '🏨 Hyatt Regency Andares',
+                lat: 20.71251651,
+                lng: -103.412327
+            },
+            'hilton': {
+                nombre: '🏨 Hilton Midtown',
+                lat: 20.69372434,
+                lng: -103.3748342
+            },
+            'jw_marriott': {
+                nombre: '🏨 JW Marriott',
+                lat: 20.6979525,
+                lng: -103.3721699
+            },
+            'fiesta_americana': {
+                nombre: '🏨 Grand Fiesta Americana',
+                lat: 20.70326364,
+                lng: -103.3762418
+            },
+            'westin': {
+                nombre: '🏨 The Westin',
+                lat: 20.65293507,
+                lng: -103.3893272
+            },
+            'ac_hotel': {
+                nombre: '🏨 AC Hotel Expo',
+                lat: 20.648357,
+                lng: -103.4033471
+            },
+            'fiesta_inn': {
+                nombre: '🏨 Fiesta Inn Expo',
+                lat: 20.65234157,
+                lng: -103.3964204
+            },
+            'ibis': {
+                nombre: '🏨 Ibis Guadalajara',
+                lat: 20.65455542,
+                lng: -103.3926616
+            },
+            'estadio_gdl': {
+                nombre: '🏟️ Estadio Guadalajara',
+                lat: 20.6821176,
+                lng: -103.4623344
+            },
+            'estadio_jalisco': {
+                nombre: '🏟️ Estadio Jalisco',
+                lat: 20.70498464,
+                lng: -103.3283486
+            },
+            'sports_arena': {
+                nombre: '🏋️ Sports Arena Club',
+                lat: 20.71852963,
+                lng: -103.4912889
+            },
+            'academia_aga': {
+                nombre: '⚽ Academia AGA',
+                lat: 20.75004178,
+                lng: -103.5436545
+            }
+        };
+
+        // Datos de rutas
+        const RUTAS = {
+            'aeropuerto_gdl|hyatt': {
+                principal: {
+                    distancia: '30.2 km',
+                    tiempo: '60 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5), se toma el Blvd. Aeropuerto hacia la carretera México 23/44, continuando por Calz. Lázaro Cárdenas hasta tomar la salida hacia Av. Patria. Se avanza por dicha avenida hasta llegar a Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Hyatt+Regency+Andares+Zapopan/'
+                },
+                secundaria: {
+                    distancia: '39.5 km',
+                    tiempo: '60 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5), se toma el Blvd. Aeropuerto hacia la carretera México 23/44, continuando por Periférico Sur hasta tomar la salida hacia Av. Patria. Se avanza por dicha avenida hasta llegar a Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Hyatt+Regency+Andares+Zapopan/'
+                },
+                terciaria: {
+                    distancia: '39.4 km',
+                    tiempo: '70 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5), se toma el Blvd. Aeropuerto hacia la carretera México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta tomar la salida hacia Av. Acueducto en Puerta de Hierro, Zapopan. Se finaliza por Av. Acueducto hasta llegar a Paseo Andares, Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Hyatt+Regency+Andares+Zapopan/'
+                }
+            },
+            'aeropuerto_gdl|hilton': {
+                principal: {
+                    distancia: '25.8 km',
+                    tiempo: '45 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta tomar la salida hacia Avenida México. Se continúa por Avenida México hasta llegar al Hotel Hilton Midtown en el Centro.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Hilton+Midtown+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '35.2 km',
+                    tiempo: '50 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta la salida hacia Avenida México. Se finaliza por Avenida México hasta el Hotel Hilton Midtown.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Hilton+Midtown+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '36.5 km',
+                    tiempo: '55 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín, luego hacia Avenida México hasta llegar al Hotel Hilton Midtown.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Hilton+Midtown+Guadalajara/'
+                }
+            },
+            'aeropuerto_gdl|jw_marriott': {
+                principal: {
+                    distancia: '28.5 km',
+                    tiempo: '55 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta Av. Patria. Se continúa hacia Zapopan hasta llegar al JW Marriott.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/JW+Marriott+Zapopan/'
+                },
+                secundaria: {
+                    distancia: '38.0 km',
+                    tiempo: '60 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta Av. Patria. Se continúa hacia Zapopan hasta llegar al JW Marriott.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/JW+Marriott+Zapopan/'
+                },
+                terciaria: {
+                    distancia: '38.5 km',
+                    tiempo: '65 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Av. Acueducto. Se finaliza hacia Zapopan hasta llegar al JW Marriott.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/JW+Marriott+Zapopan/'
+                }
+            },
+            'aeropuerto_gdl|fiesta_americana': {
+                principal: {
+                    distancia: '29.0 km',
+                    tiempo: '55 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta Av. Patria. Se continúa hacia Zapopan hasta llegar a Grand Fiesta Americana.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Grand+Fiesta+Americana+Zapopan/'
+                },
+                secundaria: {
+                    distancia: '38.5 km',
+                    tiempo: '60 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta Av. Patria. Se continúa hacia Zapopan hasta llegar a Grand Fiesta Americana.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Grand+Fiesta+Americana+Zapopan/'
+                },
+                terciaria: {
+                    distancia: '39.0 km',
+                    tiempo: '65 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Av. Acueducto. Se finaliza hacia Zapopan hasta llegar a Grand Fiesta Americana.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Grand+Fiesta+Americana+Zapopan/'
+                }
+            },
+            'aeropuerto_gdl|westin': {
+                principal: {
+                    distancia: '26.0 km',
+                    tiempo: '48 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta Avenida México. Se continúa hacia el Centro hasta llegar a The Westin.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/The+Westin+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '35.5 km',
+                    tiempo: '52 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta Avenida México. Se continúa hacia el Centro hasta llegar a The Westin.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/The+Westin+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '37.0 km',
+                    tiempo: '57 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Avenida México. Se continúa hacia el Centro hasta llegar a The Westin.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/The+Westin+Guadalajara/'
+                }
+            },
+            'aeropuerto_gdl|ac_hotel': {
+                principal: {
+                    distancia: '27.5 km',
+                    tiempo: '50 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta Av. Patria. Se continúa hacia el Área de Exposiciones hasta llegar a AC Hotel Expo.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/AC+Hotel+Expo+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '37.0 km',
+                    tiempo: '55 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta Av. Patria. Se continúa hacia el Área de Exposiciones hasta llegar a AC Hotel Expo.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/AC+Hotel+Expo+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '37.5 km',
+                    tiempo: '60 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Av. Acueducto. Se finaliza hacia el Área de Exposiciones hasta llegar a AC Hotel Expo.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/AC+Hotel+Expo+Guadalajara/'
+                }
+            },
+            'aeropuerto_gdl|fiesta_inn': {
+                principal: {
+                    distancia: '27.0 km',
+                    tiempo: '50 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta Av. Patria. Se continúa hacia el Área de Exposiciones hasta llegar a Fiesta Inn Expo.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Fiesta+Inn+Expo+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '36.5 km',
+                    tiempo: '55 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta Av. Patria. Se continúa hacia el Área de Exposiciones hasta llegar a Fiesta Inn Expo.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Fiesta+Inn+Expo+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '37.0 km',
+                    tiempo: '60 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Av. Acueducto. Se finaliza hacia el Área de Exposiciones hasta llegar a Fiesta Inn Expo.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Fiesta+Inn+Expo+Guadalajara/'
+                }
+            },
+            'aeropuerto_gdl|ibis': {
+                principal: {
+                    distancia: '26.5 km',
+                    tiempo: '48 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Calz. Lázaro Cárdenas hasta Avenida México. Se continúa hacia el Centro hasta llegar a Ibis Guadalajara.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Ibis+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '36.0 km',
+                    tiempo: '52 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Periférico Sur hasta Avenida México. Se continúa hacia el Centro hasta llegar a Ibis Guadalajara.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Ibis+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '37.5 km',
+                    tiempo: '57 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara, se toma el Blvd. Aeropuerto hacia México 23/44, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Avenida México. Se continúa hacia el Centro hasta llegar a Ibis Guadalajara.',
+                    url: 'https://www.google.com/maps/dir/Aeropuerto+Internacional+Guadalajara/Ibis+Guadalajara/'
+                }
+            },
+            'base_aerea|hyatt': {
+                principal: {
+                    distancia: '18.5 km',
+                    tiempo: '35 min',
+                    descripcion: 'Desde la Base Aérea Militar de Zapopan, se toma Av. López Mateos hacia el sur, continuando por Av. Patria hasta llegar a Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Base+Aerea+Zapopan/Hyatt+Regency+Andares+Zapopan/'
+                },
+                secundaria: {
+                    distancia: '22.0 km',
+                    tiempo: '40 min',
+                    descripcion: 'Desde la Base Aérea Militar de Zapopan, se toma Av. López Mateos hacia el sur, continuando por Periférico Sur hasta Av. Patria. Se continúa hasta llegar a Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Base+Aerea+Zapopan/Hyatt+Regency+Andares+Zapopan/'
+                },
+                terciaria: {
+                    distancia: '23.0 km',
+                    tiempo: '45 min',
+                    descripcion: 'Desde la Base Aérea Militar de Zapopan, se toma Av. López Mateos hacia el sur, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Av. Acueducto. Se finaliza hacia Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Base+Aerea+Zapopan/Hyatt+Regency+Andares+Zapopan/'
+                }
+            },
+            'base_aerea|hilton': {
+                principal: {
+                    distancia: '15.0 km',
+                    tiempo: '30 min',
+                    descripcion: 'Desde la Base Aérea Militar de Zapopan, se toma Av. López Mateos hacia el sur, continuando por Avenida México hasta llegar al Hotel Hilton Midtown en el Centro.',
+                    url: 'https://www.google.com/maps/dir/Base+Aerea+Zapopan/Hilton+Midtown+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '20.0 km',
+                    tiempo: '35 min',
+                    descripcion: 'Desde la Base Aérea Militar de Zapopan, se toma Av. López Mateos hacia el sur, continuando por Periférico Sur hasta Avenida México. Se continúa hacia el Centro hasta llegar al Hotel Hilton Midtown.',
+                    url: 'https://www.google.com/maps/dir/Base+Aerea+Zapopan/Hilton+Midtown+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '21.0 km',
+                    tiempo: '40 min',
+                    descripcion: 'Desde la Base Aérea Militar de Zapopan, se toma Av. López Mateos hacia el sur, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Avenida México. Se continúa hacia el Centro hasta llegar al Hotel Hilton Midtown.',
+                    url: 'https://www.google.com/maps/dir/Base+Aerea+Zapopan/Hilton+Midtown+Guadalajara/'
+                }
+            },
+            'estadio_gdl|hyatt': {
+                principal: {
+                    distancia: '12.5 km',
+                    tiempo: '25 min',
+                    descripcion: 'Desde el Estadio Guadalajara, se toma Av. Paseo de la Montaña hacia el norte, continuando por Av. Patria hasta llegar a Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Estadio+Guadalajara/Hyatt+Regency+Andares+Zapopan/'
+                },
+                secundaria: {
+                    distancia: '16.0 km',
+                    tiempo: '30 min',
+                    descripcion: 'Desde el Estadio Guadalajara, se toma Av. Paseo de la Montaña hacia el norte, continuando por Periférico Sur hasta Av. Patria. Se continúa hasta llegar a Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Estadio+Guadalajara/Hyatt+Regency+Andares+Zapopan/'
+                },
+                terciaria: {
+                    distancia: '17.0 km',
+                    tiempo: '35 min',
+                    descripcion: 'Desde el Estadio Guadalajara, se toma Av. Paseo de la Montaña hacia el norte, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Av. Acueducto. Se finaliza hacia Paseo Andares en Zapopan.',
+                    url: 'https://www.google.com/maps/dir/Estadio+Guadalajara/Hyatt+Regency+Andares+Zapopan/'
+                }
+            },
+            'estadio_gdl|hilton': {
+                principal: {
+                    distancia: '10.0 km',
+                    tiempo: '20 min',
+                    descripcion: 'Desde el Estadio Guadalajara, se toma Av. Paseo de la Montaña hacia el norte, continuando por Avenida México hasta llegar al Hotel Hilton Midtown en el Centro.',
+                    url: 'https://www.google.com/maps/dir/Estadio+Guadalajara/Hilton+Midtown+Guadalajara/'
+                },
+                secundaria: {
+                    distancia: '14.0 km',
+                    tiempo: '25 min',
+                    descripcion: 'Desde el Estadio Guadalajara, se toma Av. Paseo de la Montaña hacia el norte, continuando por Periférico Sur hasta Avenida México. Se continúa hacia el Centro hasta llegar al Hotel Hilton Midtown.',
+                    url: 'https://www.google.com/maps/dir/Estadio+Guadalajara/Hilton+Midtown+Guadalajara/'
+                },
+                terciaria: {
+                    distancia: '15.0 km',
+                    tiempo: '30 min',
+                    descripcion: 'Desde el Estadio Guadalajara, se toma Av. Paseo de la Montaña hacia el norte, continuando por Av. Periférico Poniente Manuel Gómez Morín hasta Avenida México. Se continúa hacia el Centro hasta llegar al Hotel Hilton Midtown.',
+                    url: 'https://www.google.com/maps/dir/Estadio+Guadalajara/Hilton+Midtown+Guadalajara/'
+                }
+            },
+
+
+,
+            'estadio_gdl|aeropuerto_gdl': {
+                principal: {
+                    distancia: '32.2 km',
+                    tiempo: '1h 13 min',
+                    descripcion: 'Desde el Estadio Guadalajara (Estadio Akron) en El Bajío, Zapopan, se toma Av. Del Bajío hacia Av. Vallarta, continuando por Calz. Lázaro Cárdenas y la carretera México 23/44, finalizando en el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5).',
+                    url: 'https://acortar.link/9eTD9P',
+                    kml: [[20.68135, -103.46388], [20.68122, -103.46384], [20.68113, -103.46382], [20.68094, -103.46373], [20.68079, -103.46364], [20.68078, -103.46363], [20.68074, -103.4636], [20.68068, -103.46354], [20.68061, -103.46346], [20.6806, -103.46346], [20.68054, -103.46336], [20.68051, -103.46332], [20.68047, -103.4632], [20.68046, -103.46317], [20.68045, -103.46317], [20.68008, -103.46332], [20.68007, -103.46332], [20.67995, -103.46337], [20.6799, -103.46322], [20.67984, -103.46299], [20.67981, -103.46273], [20.6798, -103.46247], [20.6798, -103.46229], [20.67982, -103.46145], [20.67965, -103.46153], [20.67939, -103.46158], [20.67909, -103.46161], [20.67795, -103.46169], [20.6769, -103.46178], [20.67629, -103.46183], [20.67489, -103.46194], [20.67435, -103.46198], [20.67343, -103.46205], [20.67326, -103.46207], [20.67254, -103.46212], [20.67242, -103.46213], [20.67232, -103.46213], [20.67222, -103.46212], [20.67211, -103.46208], [20.67199, -103.462], [20.67207, -103.4618], [20.6726, -103.46065], [20.67284, -103.46013], [20.67292, -103.45996], [20.67308, -103.45961], [20.67352, -103.45864], [20.67355, -103.45858], [20.67361, -103.4584], [20.67363, -103.45833], [20.67367, -103.45821], [20.67372, -103.45803], [20.67376, -103.45788], [20.67382, -103.45766], [20.67388, -103.45748], [20.67414, -103.45656], [20.67429, -103.456], [20.67431, -103.45594], [20.67433, -103.45582], [20.67434, -103.4558], [20.67435, -103.4557], [20.67436, -103.45563], [20.67436, -103.45553], [20.67435, -103.45547], [20.67434, -103.45543], [20.67431, -103.45535], [20.6743, -103.45532], [20.67405, -103.45531], [20.67391, -103.4553], [20.67367, -103.45528], [20.67347, -103.45526], [20.67317, -103.45519], [20.673, -103.45514], [20.67285, -103.4551], [20.67266, -103.45502], [20.67238, -103.45488], [20.67236, -103.45487], [20.67206, -103.45467], [20.67205, -103.45467], [20.67198, -103.45466], [20.67192, -103.45463], [20.67181, -103.45457], [20.67158, -103.45444], [20.67121, -103.45418], [20.67117, -103.45416], [20.67112, -103.45412], [20.67097, -103.454], [20.67088, -103.45392], [20.67069, -103.45376], [20.6706, -103.45369], [20.6705, -103.45361], [20.67002, -103.45317], [20.66999, -103.45313], [20.66993, -103.45308], [20.66988, -103.45304], [20.66985, -103.45302], [20.66981, -103.45299], [20.66972, -103.45291], [20.66962, -103.45282], [20.66953, -103.45273], [20.66947, -103.45267], [20.66942, -103.4526], [20.66937, -103.45253], [20.66933, -103.45245], [20.66928, -103.45238], [20.66924, -103.4523], [20.66906, -103.45216], [20.66873, -103.45196], [20.66856, -103.45187], [20.66852, -103.45185], [20.66818, -103.45169], [20.6677, -103.4515], [20.66692, -103.45118], [20.66616, -103.45088], [20.66616, -103.45087], [20.66608, -103.45084], [20.66603, -103.45082], [20.6659, -103.45077], [20.66457, -103.4502], [20.6636, -103.4498], [20.66311, -103.44957], [20.6627, -103.4494], [20.66204, -103.44912], [20.66197, -103.44909], [20.66136, -103.44884], [20.66072, -103.44858], [20.66006, -103.44831], [20.65934, -103.448], [20.65896, -103.44785], [20.65889, -103.44782], [20.65876, -103.44777], [20.65865, -103.44772], [20.65853, -103.44767], [20.6585, -103.44766], [20.65848, -103.44765], [20.65816, -103.44753], [20.65786, -103.44739], [20.65683, -103.44697], [20.65602, -103.44662], [20.65585, -103.44655], [20.65529, -103.44631], [20.65443, -103.44594], [20.65436, -103.44593], [20.65426, -103.44593], [20.65408, -103.4459], [20.65358, -103.44571], [20.65334, -103.44559], [20.65327, -103.44556], [20.65324, -103.44555], [20.65321, -103.44554], [20.65302, -103.44546], [20.65295, -103.44541], [20.65239, -103.44511], [20.65139, -103.44469], [20.6511, -103.44457], [20.65091, -103.44449], [20.6506, -103.44436], [20.65033, -103.44426], [20.64979, -103.44404], [20.64974, -103.44401], [20.64876, -103.4436], [20.64861, -103.44352], [20.64844, -103.44346], [20.64781, -103.44322], [20.64779, -103.44321], [20.64724, -103.44298], [20.64718, -103.44295], [20.64622, -103.44256], [20.64587, -103.4424], [20.64533, -103.44217], [20.64324, -103.44131], [20.64306, -103.44124], [20.64295, -103.4412], [20.64219, -103.44086], [20.64143, -103.44056], [20.64123, -103.44048], [20.64103, -103.44039], [20.64033, -103.44009], [20.63955, -103.43977], [20.63892, -103.4395], [20.63753, -103.43897], [20.63745, -103.43894], [20.63727, -103.43886], [20.63696, -103.43873], [20.63649, -103.4385], [20.63635, -103.43844], [20.63592, -103.43826], [20.63543, -103.43805], [20.63526, -103.43798], [20.63518, -103.43795], [20.63424, -103.43754], [20.63181, -103.43655], [20.63163, -103.43648], [20.63097, -103.43617], [20.63077, -103.43609], [20.63069, -103.43605], [20.62931, -103.43549], [20.62897, -103.43535], [20.62844, -103.43512], [20.62811, -103.43498], [20.62741, -103.43469], [20.62731, -103.43465], [20.62722, -103.43461], [20.62657, -103.43433], [20.62601, -103.43409], [20.6258, -103.43399], [20.62524, -103.43367], [20.62515, -103.43363], [20.62401, -103.43302], [20.6239, -103.43296], [20.62362, -103.43279], [20.62335, -103.43264], [20.62272, -103.4323], [20.6223, -103.43208], [20.62188, -103.43185], [20.62125, -103.43149], [20.62054, -103.43112], [20.62013, -103.4309], [20.62001, -103.43083], [20.61982, -103.43073], [20.61964, -103.43063], [20.6195, -103.43056], [20.61892, -103.43025], [20.61855, -103.43006], [20.61848, -103.43002], [20.61835, -103.42994], [20.61807, -103.42979], [20.6179, -103.42971], [20.61732, -103.4294], [20.61714, -103.4293], [20.61697, -103.42921], [20.61695, -103.4292], [20.6169, -103.42917], [20.61675, -103.42908], [20.61674, -103.42907], [20.61651, -103.42896], [20.61622, -103.4288], [20.61614, -103.42874], [20.61588, -103.42856], [20.61575, -103.42845], [20.61563, -103.42835], [20.61556, -103.42829], [20.61545, -103.42817], [20.61533, -103.42804], [20.6151, -103.42773], [20.61499, -103.42757], [20.61478, -103.42722], [20.61469, -103.42707], [20.61469, -103.42706], [20.61459, -103.42689], [20.61459, -103.42688], [20.61458, -103.42687], [20.61449, -103.42672], [20.61434, -103.42647], [20.61425, -103.42632], [20.61411, -103.42606], [20.61396, -103.42579], [20.61395, -103.42577], [20.61388, -103.42565], [20.61382, -103.42555], [20.61372, -103.42538], [20.61366, -103.42527], [20.61362, -103.4252], [20.61357, -103.42512], [20.61349, -103.42499], [20.6134, -103.42484], [20.61328, -103.42464], [20.61287, -103.42397], [20.61263, -103.42357], [20.61254, -103.4234], [20.6123, -103.42291], [20.61215, -103.42253], [20.61208, -103.4223], [20.61199, -103.42203], [20.61197, -103.42194], [20.6119, -103.4217], [20.61189, -103.42162], [20.61184, -103.42143], [20.61179, -103.42123], [20.61167, -103.42075], [20.61166, -103.42068], [20.61155, -103.4202], [20.61138, -103.41958], [20.61134, -103.41942], [20.61121, -103.41889], [20.61094, -103.41782], [20.61081, -103.41725], [20.61059, -103.41633], [20.61051, -103.41601], [20.61044, -103.41568], [20.6103, -103.41509], [20.61027, -103.41497], [20.61021, -103.41472], [20.61003, -103.41402], [20.60998, -103.41383], [20.60997, -103.41379], [20.60985, -103.41331], [20.60962, -103.41235], [20.60957, -103.41216], [20.60952, -103.41197], [20.60948, -103.41179], [20.60918, -103.41058], [20.60913, -103.41037], [20.60912, -103.41034], [20.60908, -103.41019], [20.60897, -103.40975], [20.60892, -103.40954], [20.60875, -103.40883], [20.60844, -103.40743], [20.60798, -103.40556], [20.60791, -103.40524], [20.60782, -103.40492], [20.60776, -103.40467], [20.60776, -103.40465], [20.60757, -103.40391], [20.60752, -103.40373], [20.60744, -103.40342], [20.60737, -103.40318], [20.60724, -103.40287], [20.6072, -103.40275], [20.60713, -103.40261], [20.60701, -103.40234], [20.60699, -103.4023], [20.6068, -103.40196], [20.60672, -103.40182], [20.60664, -103.40169], [20.6064, -103.40134], [20.60638, -103.40132], [20.60629, -103.40119], [20.60612, -103.40095], [20.6061, -103.40093], [20.6058, -103.40059], [20.60548, -103.40023], [20.60545, -103.40019], [20.60437, -103.399], [20.60416, -103.39877], [20.60405, -103.39865], [20.60358, -103.39812], [20.60326, -103.39777], [20.60313, -103.39761], [20.60305, -103.39751], [20.60222, -103.39663], [20.60084, -103.3951], [20.60072, -103.39496], [20.60059, -103.39482], [20.60056, -103.39478], [20.60003, -103.3942], [20.59988, -103.39404], [20.59967, -103.3938], [20.59946, -103.39358], [20.59894, -103.39301], [20.59841, -103.39248], [20.59809, -103.39216], [20.59806, -103.39214], [20.59786, -103.39196], [20.59771, -103.39183], [20.59729, -103.39147], [20.59635, -103.39068], [20.59581, -103.39024], [20.59533, -103.38983], [20.59509, -103.38962], [20.59463, -103.38924], [20.59333, -103.38816], [20.59297, -103.38786], [20.59233, -103.38733], [20.59206, -103.3871], [20.59172, -103.38682], [20.59104, -103.38625], [20.59077, -103.38603], [20.59062, -103.38591], [20.59054, -103.38584], [20.59048, -103.3858], [20.58987, -103.38532], [20.58913, -103.38468], [20.58895, -103.38453], [20.58879, -103.3844], [20.58846, -103.38411], [20.58811, -103.38382], [20.58777, -103.38354], [20.58775, -103.38352], [20.58767, -103.38346], [20.58736, -103.3832], [20.58725, -103.3831], [20.58706, -103.38293], [20.58667, -103.38259], [20.58647, -103.38243], [20.58631, -103.38228], [20.58598, -103.38197], [20.58567, -103.38163], [20.58556, -103.3815], [20.58537, -103.38125], [20.5852, -103.381], [20.58506, -103.38076], [20.58505, -103.38074], [20.5847, -103.38013], [20.5845, -103.37977], [20.58434, -103.37949], [20.58431, -103.37945], [20.58412, -103.37912], [20.58402, -103.37896], [20.58375, -103.37849], [20.58347, -103.378], [20.58342, -103.37792], [20.58333, -103.37776], [20.58305, -103.37726], [20.58292, -103.37703], [20.58272, -103.37668], [20.58251, -103.37631], [20.58219, -103.37575], [20.58164, -103.37478], [20.58155, -103.37463], [20.58102, -103.37371], [20.58081, -103.37336], [20.5808, -103.37334], [20.58066, -103.3731], [20.58043, -103.37264], [20.58035, -103.37246], [20.58014, -103.37196], [20.58, -103.37163], [20.57983, -103.37113], [20.57974, -103.37085], [20.57966, -103.37055], [20.57957, -103.37019], [20.57953, -103.37002], [20.57939, -103.36949], [20.57937, -103.36939], [20.57915, -103.36857], [20.57907, -103.36827], [20.57892, -103.36767], [20.57891, -103.36761], [20.57889, -103.36755], [20.57884, -103.36738], [20.57865, -103.36668], [20.57839, -103.36558], [20.5782, -103.36485], [20.57818, -103.36479], [20.57811, -103.36452], [20.57791, -103.36374], [20.57789, -103.36367], [20.5777, -103.36294], [20.57765, -103.36273], [20.57762, -103.36261], [20.5776, -103.36255], [20.5776, -103.36254], [20.57737, -103.36164], [20.57734, -103.36153], [20.57729, -103.36135], [20.57696, -103.36019], [20.57687, -103.35981], [20.57686, -103.35977], [20.57672, -103.35915], [20.57662, -103.35847], [20.57658, -103.35807], [20.57655, -103.35779], [20.57654, -103.35773], [20.57653, -103.3576], [20.57651, -103.35717], [20.57648, -103.35686], [20.57646, -103.35646], [20.57646, -103.35645], [20.57637, -103.35534], [20.57637, -103.35522], [20.57636, -103.35507], [20.57635, -103.35492], [20.57634, -103.35475], [20.57633, -103.35471], [20.57632, -103.35435], [20.57631, -103.35431], [20.57616, -103.35234], [20.57615, -103.35224], [20.57614, -103.35213], [20.57608, -103.35136], [20.576, -103.35022], [20.576, -103.35013], [20.57599, -103.34999], [20.57596, -103.34912], [20.57597, -103.34896], [20.57599, -103.34871], [20.57602, -103.34853], [20.57608, -103.34823], [20.57613, -103.34802], [20.57625, -103.34766], [20.5766, -103.34699], [20.57704, -103.3462], [20.57741, -103.34555], [20.578, -103.34445], [20.57934, -103.34198], [20.57943, -103.34181], [20.58022, -103.34036], [20.58076, -103.33937], [20.58149, -103.33799], [20.58221, -103.33664], [20.58231, -103.33645], [20.58236, -103.33636], [20.58266, -103.33577], [20.58372, -103.33387], [20.58376, -103.3338], [20.58378, -103.33376], [20.58381, -103.33372], [20.58387, -103.3336], [20.58398, -103.3334], [20.58406, -103.33325], [20.58449, -103.33248], [20.58467, -103.33215], [20.58485, -103.33183], [20.58486, -103.33182], [20.58495, -103.33165], [20.58557, -103.33049], [20.58557, -103.33048], [20.58647, -103.32882], [20.5868, -103.32822], [20.58697, -103.32792], [20.58761, -103.32672], [20.58781, -103.32636], [20.58846, -103.32515], [20.58864, -103.3248], [20.58869, -103.32472], [20.58879, -103.32451], [20.58905, -103.32407], [20.58908, -103.324], [20.58912, -103.32392], [20.58918, -103.32381], [20.58926, -103.3235], [20.58932, -103.3233], [20.58936, -103.32315], [20.58938, -103.32295], [20.58938, -103.32289], [20.58938, -103.32288], [20.58938, -103.32283], [20.58937, -103.3227], [20.58937, -103.32269], [20.58937, -103.32267], [20.58933, -103.32247], [20.58923, -103.32213], [20.58912, -103.32177], [20.58906, -103.32159], [20.58905, -103.32154], [20.58898, -103.32138], [20.58891, -103.32124], [20.5888, -103.3211], [20.58873, -103.32103], [20.58865, -103.32095], [20.5885, -103.32085], [20.58837, -103.32076], [20.58836, -103.32075], [20.58835, -103.32073], [20.58831, -103.32064], [20.58787, -103.32043], [20.58765, -103.32032], [20.58614, -103.3196], [20.58481, -103.31896], [20.584, -103.31858], [20.58326, -103.31822], [20.58292, -103.31807], [20.58249, -103.31785], [20.58237, -103.3178], [20.58118, -103.31723], [20.58101, -103.31716], [20.58052, -103.31692], [20.58025, -103.31679], [20.57927, -103.31632], [20.57828, -103.31585], [20.57755, -103.31551], [20.57709, -103.31529], [20.57691, -103.3152], [20.57633, -103.31492], [20.57611, -103.31481], [20.57573, -103.31463], [20.5757, -103.31462], [20.57526, -103.3144], [20.57508, -103.31432], [20.57465, -103.31411], [20.57407, -103.31384], [20.57277, -103.31323], [20.5726, -103.31315], [20.57234, -103.31302], [20.57218, -103.31295], [20.57216, -103.31294], [20.57208, -103.3129], [20.57207, -103.3129], [20.57206, -103.31289], [20.57204, -103.31289], [20.57188, -103.31281], [20.5717, -103.31272], [20.57128, -103.31251], [20.57066, -103.31222], [20.57016, -103.31198], [20.56983, -103.31182], [20.56933, -103.31158], [20.56859, -103.31123], [20.56811, -103.311], [20.5679, -103.3109], [20.5675, -103.31071], [20.56714, -103.31055], [20.56664, -103.31031], [20.56629, -103.31015], [20.56611, -103.31006], [20.56595, -103.30998], [20.56582, -103.30993], [20.56468, -103.30937], [20.56456, -103.30931], [20.56455, -103.30931], [20.56444, -103.30926], [20.56441, -103.30924], [20.56432, -103.3092], [20.56429, -103.30918], [20.56422, -103.30915], [20.56414, -103.30911], [20.56299, -103.30857], [20.56141, -103.30782], [20.561, -103.30762], [20.56082, -103.30754], [20.56051, -103.30739], [20.55975, -103.30703], [20.55904, -103.3067], [20.55896, -103.30666], [20.55874, -103.30655], [20.55842, -103.3064], [20.55816, -103.30627], [20.55791, -103.30616], [20.557, -103.30572], [20.55694, -103.30569], [20.55556, -103.30503], [20.55472, -103.30465], [20.55402, -103.30431], [20.55356, -103.30409], [20.55149, -103.3031], [20.55128, -103.303], [20.54954, -103.30218], [20.54865, -103.30175], [20.54801, -103.30144], [20.5474, -103.30115], [20.54719, -103.30105], [20.54631, -103.30063], [20.54512, -103.30007], [20.54504, -103.30003], [20.54448, -103.29976], [20.54432, -103.29969], [20.5437, -103.2994], [20.54336, -103.29923], [20.54218, -103.29867], [20.54117, -103.2982], [20.54015, -103.29771], [20.53797, -103.29668], [20.53616, -103.29581], [20.53404, -103.29481], [20.53365, -103.29462], [20.5332, -103.29441], [20.53299, -103.29431], [20.53232, -103.29401], [20.53212, -103.29399], [20.53206, -103.29396], [20.53193, -103.29389], [20.5318, -103.29384], [20.53163, -103.2938], [20.5315, -103.29377], [20.53134, -103.29375], [20.53114, -103.29378], [20.531, -103.29381], [20.53091, -103.29384], [20.53081, -103.29388], [20.53073, -103.29393], [20.53062, -103.29399], [20.53054, -103.29407], [20.53047, -103.29414], [20.5304, -103.29421], [20.5303, -103.29436], [20.5302, -103.29453], [20.52991, -103.29509], [20.52982, -103.29521], [20.52964, -103.29561], [20.52947, -103.29599], [20.5293, -103.29638], [20.52922, -103.29657], [20.52913, -103.29684], [20.52884, -103.29755], [20.52879, -103.29767], [20.52859, -103.29815], [20.52858, -103.29819], [20.52859, -103.29822], [20.52859, -103.29823], [20.5286, -103.29824], [20.5286, -103.29825], [20.5286, -103.29826], [20.52861, -103.29828], [20.52861, -103.29829], [20.52861, -103.2983], [20.52861, -103.29832], [20.5286, -103.29833], [20.5286, -103.29834], [20.5286, -103.29836], [20.52859, -103.29837], [20.52859, -103.29838], [20.52858, -103.29839], [20.52857, -103.29841], [20.52856, -103.29842], [20.52855, -103.29843], [20.52854, -103.29844], [20.52853, -103.29845], [20.52852, -103.29845], [20.52851, -103.29846], [20.5285, -103.29846], [20.52848, -103.29847], [20.52847, -103.29847], [20.52846, -103.29849], [20.52809, -103.29935], [20.52773, -103.30019], [20.52757, -103.30065], [20.52716, -103.30164], [20.52703, -103.30194], [20.52698, -103.30207], [20.52691, -103.30229], [20.52692, -103.3023], [20.52692, -103.30231], [20.52693, -103.30231], [20.52693, -103.30232], [20.52693, -103.30233], [20.52694, -103.30233], [20.52694, -103.30234], [20.52694, -103.30235], [20.52694, -103.30236], [20.52694, -103.30237], [20.52694, -103.30238], [20.52694, -103.30239], [20.52694, -103.3024], [20.52694, -103.30241], [20.52694, -103.30242], [20.52709, -103.30247], [20.52707, -103.30252], [20.52706, -103.30255], [20.52704, -103.30256], [20.527, -103.30259], [20.52697, -103.3026], [20.52696, -103.3027], [20.52694, -103.30274], [20.52693, -103.30278], [20.52691, -103.30281], [20.52686, -103.30293], [20.5268, -103.30307], [20.5266, -103.30362], [20.52655, -103.30373], [20.52653, -103.30378], [20.52652, -103.30384], [20.52651, -103.30388], [20.52651, -103.30391], [20.52653, -103.30396], [20.52658, -103.30406], [20.5266, -103.30411], [20.52685, -103.30462], [20.52714, -103.30521], [20.52721, -103.30534]]
+                },
+                secundaria: {
+                    distancia: '38.8 km',
+                    tiempo: '1h 33 min',
+                    descripcion: 'Desde el Estadio Guadalajara (Estadio Akron) en El Bajío, Zapopan, se toma Av. Del Bajío hacia Av. Aviación, continuando por Periférico Sur y la carretera México 23/44, finalizando en el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5).',
+                    url: 'https://acortar.link/siUCig',
+                    kml: [[20.68135, -103.46388], [20.68122, -103.46384], [20.68113, -103.46382], [20.68094, -103.46373], [20.68079, -103.46364], [20.68078, -103.46363], [20.68074, -103.4636], [20.68068, -103.46354], [20.68061, -103.46346], [20.6806, -103.46346], [20.68054, -103.46336], [20.68051, -103.46332], [20.68047, -103.4632], [20.68046, -103.46317], [20.68045, -103.46317], [20.68008, -103.46332], [20.68007, -103.46332], [20.67995, -103.46337], [20.6799, -103.46322], [20.67984, -103.46299], [20.67981, -103.46273], [20.6798, -103.46247], [20.6798, -103.46229], [20.67982, -103.46145], [20.67979, -103.46128], [20.67982, -103.46127], [20.68003, -103.46111], [20.68028, -103.46091], [20.68046, -103.46075], [20.68065, -103.46064], [20.68089, -103.46054], [20.68113, -103.46048], [20.68134, -103.46045], [20.68155, -103.46043], [20.68172, -103.46045], [20.68195, -103.46049], [20.68224, -103.46054], [20.68251, -103.46056], [20.6827, -103.46057], [20.68289, -103.46056], [20.68314, -103.46055], [20.68341, -103.46052], [20.68373, -103.46044], [20.68429, -103.46028], [20.68475, -103.46009], [20.68499, -103.45995], [20.68517, -103.45984], [20.6853, -103.45975], [20.68532, -103.45974], [20.68598, -103.45926], [20.68737, -103.45816], [20.68766, -103.45789], [20.68772, -103.45783], [20.68796, -103.45767], [20.68816, -103.45756], [20.68834, -103.4575], [20.68845, -103.45746], [20.68862, -103.45741], [20.68876, -103.45741], [20.68883, -103.45741], [20.68903, -103.45741], [20.68905, -103.45741], [20.68929, -103.45744], [20.68948, -103.45749], [20.68952, -103.4575], [20.68973, -103.45759], [20.68989, -103.45769], [20.68992, -103.45771], [20.69008, -103.45786], [20.69028, -103.45808], [20.69059, -103.45852], [20.69086, -103.45893], [20.69092, -103.45902], [20.69109, -103.45933], [20.69111, -103.45936], [20.69141, -103.45975], [20.69175, -103.46022], [20.69202, -103.46063], [20.69219, -103.46089], [20.69234, -103.46104], [20.69249, -103.46116], [20.69269, -103.46129], [20.69283, -103.46136], [20.69304, -103.46143], [20.69324, -103.46148], [20.69336, -103.4615], [20.69375, -103.46153], [20.6943, -103.4615], [20.69434, -103.46151], [20.69438, -103.46152], [20.69441, -103.46154], [20.69448, -103.46158], [20.6945, -103.46156], [20.69452, -103.46154], [20.69454, -103.46152], [20.69456, -103.46151], [20.69459, -103.4615], [20.69461, -103.46149], [20.69464, -103.46148], [20.69467, -103.46148], [20.69469, -103.46148], [20.69472, -103.46149], [20.69475, -103.4615], [20.69477, -103.46151], [20.69481, -103.46153], [20.69505, -103.46152], [20.69527, -103.46152], [20.69562, -103.46153], [20.69595, -103.46156], [20.69608, -103.46158], [20.69626, -103.46161], [20.69639, -103.46163], [20.6964, -103.46164], [20.69648, -103.46166], [20.69675, -103.46177], [20.69698, -103.46183], [20.69721, -103.46189], [20.69749, -103.46195], [20.6981, -103.46204], [20.69872, -103.46219], [20.6988, -103.46221], [20.69891, -103.46221], [20.699, -103.46219], [20.6991, -103.46217], [20.6992, -103.46213], [20.69932, -103.46209], [20.69967, -103.46194], [20.69995, -103.46182], [20.70003, -103.46177], [20.70025, -103.46163], [20.70037, -103.46155], [20.7004, -103.46153], [20.7008, -103.46126], [20.70098, -103.46113], [20.70142, -103.46079], [20.70157, -103.46068], [20.70186, -103.46045], [20.70159, -103.46023], [20.70143, -103.4601], [20.70141, -103.46006], [20.70114, -103.45983], [20.70102, -103.45972], [20.70066, -103.45941], [20.70052, -103.45929], [20.70031, -103.45909], [20.70018, -103.45898], [20.70009, -103.45891], [20.69998, -103.45881], [20.69991, -103.45873], [20.69988, -103.4587], [20.6998, -103.45854], [20.69921, -103.45806], [20.69906, -103.45792], [20.69895, -103.45782], [20.69854, -103.45745], [20.69793, -103.45691], [20.69747, -103.45653], [20.69737, -103.45644], [20.69733, -103.45641], [20.69689, -103.45603], [20.69636, -103.45556], [20.69596, -103.45522], [20.69594, -103.45519], [20.69588, -103.45514], [20.69585, -103.45512], [20.69582, -103.45509], [20.69576, -103.45505], [20.69571, -103.455], [20.69551, -103.45483], [20.69527, -103.45464], [20.69501, -103.4544], [20.69429, -103.45378], [20.69408, -103.45359], [20.6939, -103.45343], [20.6937, -103.4532], [20.69336, -103.45278], [20.69332, -103.45273], [20.69328, -103.45263], [20.6931, -103.45238], [20.69219, -103.45126], [20.69175, -103.45068], [20.6917, -103.45061], [20.69117, -103.44995], [20.69105, -103.4498], [20.69075, -103.44942], [20.69057, -103.44919], [20.69038, -103.44894], [20.68907, -103.44729], [20.6884, -103.44643], [20.68829, -103.44629], [20.6876, -103.4454], [20.68733, -103.44506], [20.68693, -103.44456], [20.68683, -103.44448], [20.68681, -103.44447], [20.68642, -103.44398], [20.68639, -103.44394], [20.68634, -103.44387], [20.68612, -103.44359], [20.68589, -103.4433], [20.68577, -103.44315], [20.68565, -103.443], [20.6856, -103.44294], [20.68554, -103.44285], [20.68542, -103.44271], [20.68509, -103.44228], [20.68505, -103.44222], [20.68463, -103.44169], [20.68459, -103.44164], [20.6845, -103.44145], [20.68442, -103.44135], [20.68414, -103.441], [20.6839, -103.44068], [20.68378, -103.44053], [20.68375, -103.4405], [20.68306, -103.43958], [20.68297, -103.43945], [20.68295, -103.43942], [20.68293, -103.43938], [20.68287, -103.43929], [20.68267, -103.43883], [20.68259, -103.4386], [20.68257, -103.43853], [20.68254, -103.43843], [20.68254, -103.43841], [20.68246, -103.43812], [20.68238, -103.43782], [20.68232, -103.43768], [20.68231, -103.43763], [20.68218, -103.43708], [20.68217, -103.43703], [20.68216, -103.43697], [20.68189, -103.43566], [20.68181, -103.43529], [20.68173, -103.43493], [20.68147, -103.43369], [20.68146, -103.43363], [20.68132, -103.43299], [20.68131, -103.43294], [20.6813, -103.4329], [20.68121, -103.43247], [20.68106, -103.43174], [20.68105, -103.4317], [20.68074, -103.43024], [20.68071, -103.4301], [20.68068, -103.42997], [20.68052, -103.4292], [20.68038, -103.42856], [20.68024, -103.42791], [20.68013, -103.42735], [20.68009, -103.42715], [20.68007, -103.42707], [20.68001, -103.4268], [20.67992, -103.42644], [20.67992, -103.42642], [20.67992, -103.42641], [20.67976, -103.4257], [20.67968, -103.4253], [20.67961, -103.42497], [20.67954, -103.42465], [20.67949, -103.4244], [20.67944, -103.4242], [20.67912, -103.42273], [20.67898, -103.42204], [20.67896, -103.42197], [20.67895, -103.42191], [20.67893, -103.42178], [20.67892, -103.42173], [20.6789, -103.42165], [20.67889, -103.42158], [20.67887, -103.42149], [20.67885, -103.42139], [20.67884, -103.42135], [20.67859, -103.42031], [20.67831, -103.41898], [20.67826, -103.41878], [20.67818, -103.41843], [20.6781, -103.41814], [20.67804, -103.41795], [20.67797, -103.41773], [20.67784, -103.41748], [20.67774, -103.4173], [20.67765, -103.41716], [20.67757, -103.41701], [20.67738, -103.41668], [20.67705, -103.41616], [20.67666, -103.41546], [20.67655, -103.41527], [20.67652, -103.41521], [20.67647, -103.41511], [20.67642, -103.41503], [20.67634, -103.41489], [20.67629, -103.41479], [20.67626, -103.41475], [20.67613, -103.41456], [20.67577, -103.4141], [20.67576, -103.41408], [20.67563, -103.41392], [20.67551, -103.41378], [20.67512, -103.4133], [20.67495, -103.41303], [20.67489, -103.41291], [20.67469, -103.41247], [20.67441, -103.41166], [20.67428, -103.41121], [20.67418, -103.41094], [20.67405, -103.4107], [20.67384, -103.41033], [20.67364, -103.40996], [20.67265, -103.40815], [20.67238, -103.40765], [20.67215, -103.40721], [20.67211, -103.40714], [20.6721, -103.40713], [20.67166, -103.40631], [20.67066, -103.40447], [20.67046, -103.4041], [20.67021, -103.40361], [20.67011, -103.40346], [20.66999, -103.40333], [20.66998, -103.40333], [20.66997, -103.40332], [20.6699, -103.40325], [20.66984, -103.40319], [20.6698, -103.40316], [20.66955, -103.40291], [20.66934, -103.40265], [20.66896, -103.40192], [20.66847, -103.40102], [20.66814, -103.40037], [20.668, -103.40007], [20.6678, -103.3995], [20.66765, -103.39912], [20.66733, -103.39853], [20.66702, -103.39794], [20.6667, -103.39735], [20.66639, -103.39679], [20.66609, -103.39622], [20.66581, -103.3957], [20.66567, -103.39544], [20.66554, -103.39519], [20.66536, -103.39485], [20.66518, -103.39451], [20.66475, -103.39372], [20.66432, -103.39293], [20.66405, -103.39243], [20.66403, -103.3924], [20.66373, -103.39186], [20.66349, -103.39139], [20.66325, -103.39092], [20.66314, -103.39073], [20.66278, -103.39008], [20.66243, -103.3894], [20.66236, -103.38925], [20.66178, -103.38824], [20.66162, -103.38796], [20.66144, -103.38765], [20.66138, -103.38755], [20.66112, -103.3871], [20.66058, -103.38608], [20.6605, -103.38593], [20.66041, -103.38575], [20.66035, -103.38564], [20.66034, -103.38563], [20.66002, -103.38503], [20.65997, -103.38492], [20.65986, -103.38472], [20.65983, -103.38464], [20.65979, -103.38458], [20.65972, -103.38444], [20.65945, -103.38391], [20.65941, -103.38384], [20.65935, -103.38371], [20.65934, -103.3837], [20.65915, -103.38336], [20.65913, -103.38333], [20.65905, -103.38318], [20.65878, -103.3827], [20.65866, -103.38248], [20.65849, -103.38221], [20.65831, -103.38189], [20.65818, -103.38164], [20.65801, -103.38133], [20.65771, -103.38083], [20.65745, -103.38038], [20.65738, -103.38026], [20.65738, -103.38025], [20.65737, -103.38025], [20.65733, -103.38017], [20.65732, -103.38013], [20.65723, -103.37996], [20.6567, -103.37898], [20.6564, -103.37843], [20.65639, -103.37842], [20.65631, -103.37826], [20.65625, -103.37816], [20.65622, -103.37809], [20.65614, -103.37793], [20.65597, -103.37759], [20.6558, -103.37729], [20.65574, -103.37719], [20.65525, -103.37629], [20.65475, -103.3754], [20.6544, -103.37477], [20.65424, -103.37443], [20.65415, -103.37425], [20.65408, -103.37411], [20.6539, -103.37378], [20.65381, -103.37362], [20.65378, -103.37357], [20.65358, -103.37321], [20.65317, -103.37246], [20.65309, -103.3723], [20.65306, -103.37225], [20.65304, -103.37221], [20.65295, -103.37205], [20.65256, -103.37135], [20.65247, -103.37118], [20.65237, -103.37099], [20.65227, -103.37082], [20.65222, -103.37074], [20.652, -103.37034], [20.65193, -103.37019], [20.65176, -103.36986], [20.65129, -103.36902], [20.65105, -103.36858], [20.65083, -103.36815], [20.65033, -103.36729], [20.65033, -103.36727], [20.65029, -103.36721], [20.65022, -103.36708], [20.65022, -103.36707], [20.65013, -103.36691], [20.65005, -103.36675], [20.65005, -103.36674], [20.65001, -103.36668], [20.64964, -103.36598], [20.64929, -103.36533], [20.64901, -103.36482], [20.6484, -103.36369], [20.64815, -103.36321], [20.64793, -103.3628], [20.64724, -103.36155], [20.64718, -103.36143], [20.64713, -103.36134], [20.6471, -103.36128], [20.64706, -103.36121], [20.64695, -103.36101], [20.64642, -103.36004], [20.64584, -103.35896], [20.64545, -103.35824], [20.64476, -103.35696], [20.64467, -103.3568], [20.64449, -103.35646], [20.64392, -103.35542], [20.64379, -103.35519], [20.64343, -103.35454], [20.64277, -103.35336], [20.64228, -103.35243], [20.64212, -103.35214], [20.64204, -103.352], [20.6419, -103.35174], [20.64149, -103.35093], [20.64148, -103.35091], [20.64138, -103.35073], [20.64102, -103.35005], [20.64096, -103.34994], [20.64071, -103.3495], [20.64052, -103.34913], [20.64038, -103.34889], [20.63939, -103.34706], [20.63847, -103.34538], [20.63831, -103.34509], [20.63805, -103.34466], [20.63784, -103.34434], [20.63773, -103.34419], [20.63767, -103.34409], [20.63755, -103.34393], [20.6373, -103.34361], [20.63679, -103.34303], [20.63663, -103.34283], [20.63646, -103.34264], [20.63589, -103.34198], [20.63565, -103.3417], [20.63552, -103.34156], [20.63516, -103.34113], [20.63445, -103.34034], [20.63376, -103.33954], [20.63353, -103.33929], [20.63287, -103.33852], [20.63215, -103.33771], [20.63166, -103.33714], [20.63094, -103.33632], [20.63075, -103.3361], [20.63017, -103.33542], [20.63003, -103.33524], [20.63002, -103.33524], [20.63002, -103.33523], [20.63, -103.33522], [20.62998, -103.33519], [20.62992, -103.33511], [20.62989, -103.33508], [20.62983, -103.335], [20.62983, -103.33499], [20.62982, -103.33498], [20.6298, -103.33496], [20.62979, -103.33495], [20.62966, -103.33479], [20.62954, -103.33463], [20.62942, -103.33446], [20.62934, -103.33432], [20.62881, -103.33353], [20.62841, -103.33289], [20.62805, -103.33233], [20.62772, -103.33183], [20.627, -103.33074], [20.62676, -103.33038], [20.62671, -103.33029], [20.6266, -103.33013], [20.6265, -103.32999], [20.6265, -103.32998], [20.62639, -103.32982], [20.62557, -103.32856], [20.62536, -103.32825], [20.62521, -103.32799], [20.62504, -103.32765], [20.62498, -103.3275], [20.62494, -103.32737], [20.62489, -103.32723], [20.62486, -103.32708], [20.62482, -103.32692], [20.62482, -103.32688], [20.62475, -103.32653], [20.62472, -103.3265], [20.62471, -103.32647], [20.62469, -103.32644], [20.62468, -103.32642], [20.62467, -103.32639], [20.62466, -103.32636], [20.62465, -103.32633], [20.62465, -103.3263], [20.62457, -103.32571], [20.62455, -103.32553], [20.62447, -103.32483], [20.62445, -103.32471], [20.62437, -103.32393], [20.62436, -103.32382], [20.62434, -103.32372], [20.62432, -103.32351], [20.62432, -103.32344], [20.62431, -103.32329], [20.62416, -103.32298], [20.62408, -103.32284], [20.62377, -103.32255], [20.62342, -103.32225], [20.62335, -103.32218], [20.62302, -103.3219], [20.6229, -103.32181], [20.62283, -103.32177], [20.62269, -103.3217], [20.62257, -103.32168], [20.6225, -103.32166], [20.62237, -103.32165], [20.6222, -103.32165], [20.62205, -103.32167], [20.62154, -103.32173], [20.62139, -103.32175], [20.62112, -103.32179], [20.62101, -103.3218], [20.62076, -103.32181], [20.62045, -103.32182], [20.61986, -103.32186], [20.61947, -103.32189], [20.61942, -103.32189], [20.61939, -103.32189], [20.61937, -103.32189], [20.61936, -103.32188], [20.61935, -103.32187], [20.61934, -103.32186], [20.61933, -103.32186], [20.61932, -103.32185], [20.61932, -103.32184], [20.61931, -103.32183], [20.61929, -103.32181], [20.61928, -103.32178], [20.61831, -103.32186], [20.61788, -103.32189], [20.61764, -103.3219], [20.61724, -103.32191], [20.61699, -103.32194], [20.61684, -103.32195], [20.6167, -103.32197], [20.61655, -103.32199], [20.61598, -103.32211], [20.61592, -103.32213], [20.61546, -103.32229], [20.61509, -103.32238], [20.61456, -103.32259], [20.61436, -103.32267], [20.6139, -103.32289], [20.61384, -103.32293], [20.61381, -103.32295], [20.6138, -103.32296], [20.61341, -103.32317], [20.6134, -103.32318], [20.61338, -103.32318], [20.61327, -103.32325], [20.61324, -103.32327], [20.61314, -103.32333], [20.61258, -103.32371], [20.61252, -103.32375], [20.6123, -103.32389], [20.61229, -103.3239], [20.61211, -103.32403], [20.6119, -103.32419], [20.61185, -103.32423], [20.61154, -103.3245], [20.61072, -103.3253], [20.61011, -103.32592], [20.60946, -103.32658], [20.60919, -103.32684], [20.60901, -103.32703], [20.60858, -103.32747], [20.60805, -103.32801], [20.60791, -103.32813], [20.60782, -103.32821], [20.6078, -103.32822], [20.60776, -103.32825], [20.60762, -103.32836], [20.60754, -103.32842], [20.60745, -103.32847], [20.60711, -103.32865], [20.60687, -103.32873], [20.60664, -103.32877], [20.60639, -103.32879], [20.60618, -103.3288], [20.60596, -103.32878], [20.60595, -103.32878], [20.60577, -103.32876], [20.60569, -103.32875], [20.60549, -103.3287], [20.60509, -103.32852], [20.60507, -103.32851], [20.60494, -103.32845], [20.60435, -103.32817], [20.60382, -103.32792], [20.60367, -103.32784], [20.60352, -103.32777], [20.60277, -103.32741], [20.60255, -103.3273], [20.60186, -103.32697], [20.60112, -103.32662], [20.60055, -103.32634], [20.60031, -103.32623], [20.60015, -103.32615], [20.59883, -103.32553], [20.59836, -103.3253], [20.59822, -103.32523], [20.59812, -103.32518], [20.59739, -103.32483], [20.59716, -103.32472], [20.59689, -103.3246], [20.59683, -103.32457], [20.5966, -103.32447], [20.59622, -103.3243], [20.59586, -103.32413], [20.59511, -103.3238], [20.59375, -103.32321], [20.59316, -103.32295], [20.59298, -103.32287], [20.59251, -103.32265], [20.59234, -103.32258], [20.5909, -103.32188], [20.59062, -103.32175], [20.59058, -103.32173], [20.59049, -103.32168], [20.59046, -103.32167], [20.59012, -103.32151], [20.58997, -103.32143], [20.58938, -103.32114], [20.58916, -103.32102], [20.58894, -103.32092], [20.58871, -103.32081], [20.58849, -103.32071], [20.58831, -103.32064], [20.58787, -103.32043], [20.58765, -103.32032], [20.58614, -103.3196], [20.58481, -103.31896], [20.584, -103.31858], [20.58326, -103.31822], [20.58292, -103.31807], [20.58249, -103.31785], [20.58237, -103.3178], [20.58118, -103.31723], [20.58101, -103.31716], [20.58052, -103.31692], [20.58025, -103.31679], [20.57927, -103.31632], [20.57828, -103.31585], [20.57755, -103.31551], [20.57709, -103.31529], [20.57691, -103.3152], [20.57633, -103.31492], [20.57611, -103.31481], [20.57573, -103.31463], [20.5757, -103.31462], [20.57526, -103.3144], [20.57508, -103.31432], [20.57465, -103.31411], [20.57407, -103.31384], [20.57277, -103.31323], [20.5726, -103.31315], [20.57234, -103.31302], [20.57218, -103.31295], [20.57216, -103.31294], [20.57208, -103.3129], [20.57207, -103.3129], [20.57206, -103.31289], [20.57204, -103.31289], [20.57188, -103.31281], [20.5717, -103.31272], [20.57128, -103.31251], [20.57066, -103.31222], [20.57016, -103.31198], [20.56983, -103.31182], [20.56933, -103.31158], [20.56859, -103.31123], [20.56811, -103.311], [20.5679, -103.3109], [20.5675, -103.31071], [20.56714, -103.31055], [20.56664, -103.31031], [20.56629, -103.31015], [20.56611, -103.31006], [20.56595, -103.30998], [20.56582, -103.30993], [20.56468, -103.30937], [20.56456, -103.30931], [20.56455, -103.30931], [20.56444, -103.30926], [20.56441, -103.30924], [20.56432, -103.3092], [20.56429, -103.30918], [20.56422, -103.30915], [20.56414, -103.30911], [20.56299, -103.30857], [20.56141, -103.30782], [20.561, -103.30762], [20.56082, -103.30754], [20.56051, -103.30739], [20.55975, -103.30703], [20.55904, -103.3067], [20.55896, -103.30666], [20.55874, -103.30655], [20.55842, -103.3064], [20.55816, -103.30627], [20.55791, -103.30616], [20.557, -103.30572], [20.55694, -103.30569], [20.55556, -103.30503], [20.55472, -103.30465], [20.55402, -103.30431], [20.55356, -103.30409], [20.55149, -103.3031], [20.55128, -103.303], [20.54954, -103.30218], [20.54865, -103.30175], [20.54801, -103.30144], [20.5474, -103.30115], [20.54719, -103.30105], [20.54631, -103.30063], [20.54512, -103.30007], [20.54504, -103.30003], [20.54448, -103.29976], [20.54432, -103.29969], [20.5437, -103.2994], [20.54336, -103.29923], [20.54218, -103.29867], [20.54117, -103.2982], [20.54015, -103.29771], [20.53797, -103.29668], [20.53616, -103.29581], [20.53404, -103.29481], [20.53365, -103.29462], [20.5332, -103.29441], [20.53299, -103.29431], [20.53232, -103.29401], [20.53212, -103.29399], [20.53206, -103.29396], [20.53193, -103.29389], [20.5318, -103.29384], [20.53163, -103.2938], [20.5315, -103.29377], [20.53134, -103.29375], [20.53114, -103.29378], [20.531, -103.29381], [20.53091, -103.29384], [20.53081, -103.29388], [20.53073, -103.29393], [20.53062, -103.29399], [20.53054, -103.29407], [20.53047, -103.29414], [20.5304, -103.29421], [20.5303, -103.29436], [20.5302, -103.29453], [20.52991, -103.29509], [20.52982, -103.29521], [20.52964, -103.29561], [20.52947, -103.29599], [20.5293, -103.29638], [20.52922, -103.29657], [20.52913, -103.29684], [20.52884, -103.29755], [20.52879, -103.29767], [20.52859, -103.29815], [20.52858, -103.29819], [20.52859, -103.29822], [20.52859, -103.29823], [20.5286, -103.29824], [20.5286, -103.29825], [20.5286, -103.29826], [20.52861, -103.29828], [20.52861, -103.29829], [20.52861, -103.2983], [20.52861, -103.29832], [20.5286, -103.29833], [20.5286, -103.29834], [20.5286, -103.29836], [20.52859, -103.29837], [20.52859, -103.29838], [20.52858, -103.29839], [20.52857, -103.29841], [20.52856, -103.29842], [20.52855, -103.29843], [20.52854, -103.29844], [20.52853, -103.29845], [20.52852, -103.29845], [20.52851, -103.29846], [20.5285, -103.29846], [20.52848, -103.29847], [20.52847, -103.29847], [20.52846, -103.29849], [20.52809, -103.29935], [20.52773, -103.30019], [20.52757, -103.30065], [20.52716, -103.30164], [20.52703, -103.30194], [20.52698, -103.30207], [20.52691, -103.30229], [20.52692, -103.3023], [20.52692, -103.30231], [20.52693, -103.30231], [20.52693, -103.30232], [20.52693, -103.30233], [20.52694, -103.30233], [20.52694, -103.30234], [20.52694, -103.30235], [20.52694, -103.30236], [20.52694, -103.30237], [20.52694, -103.30238], [20.52694, -103.30239], [20.52694, -103.3024], [20.52694, -103.30241], [20.52694, -103.30242], [20.52709, -103.30247], [20.52707, -103.30252], [20.52706, -103.30255], [20.52704, -103.30256], [20.527, -103.30259], [20.52697, -103.3026], [20.52696, -103.3027], [20.52694, -103.30274], [20.52693, -103.30278], [20.52691, -103.30281], [20.52686, -103.30293], [20.5268, -103.30307], [20.5266, -103.30362], [20.52655, -103.30373], [20.52653, -103.30378], [20.52652, -103.30384], [20.52651, -103.30388], [20.52651, -103.30391], [20.52653, -103.30396], [20.52658, -103.30406], [20.5266, -103.30411], [20.52685, -103.30462], [20.52714, -103.30521], [20.52721, -103.30534]]
+                },
+                terciaria: {
+                    distancia: '52.2 km',
+                    tiempo: '1h 17 min',
+                    descripcion: 'Desde el Estadio Guadalajara (Estadio Akron) en El Bajío, Zapopan, se toma Av. Del Bajío hacia Av. Vallarta, continuando por Periférico Oriente y la carretera México 23/44, finalizando en el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5).',
+                    url: 'https://acortar.link/DRtjFB',
+                    kml: [[20.5267799, -103.2987463], [20.52829, -103.2982], [20.53013, -103.29407], [20.53077, -103.29284], [20.53151, -103.29248], [20.5322978, -103.2925939], [20.5328805, -103.2931732], [20.53399, -103.29459], [20.5346387, -103.2948791], [20.535342, -103.2949649], [20.5356334, -103.2943856], [20.5336943, -103.2891392], [20.5319762, -103.2846009], [20.5320566, -103.2758461], [20.5309586, -103.2703312], [20.5266583, -103.2584436], [20.527475, -103.2435738], [20.5319762, -103.2345616], [20.540001, -103.2295616], [20.565483, -103.222844], [20.5776918, -103.2171161], [20.5803837, -103.2168157], [20.5865979, -103.2187871], [20.596079, -103.2199243], [20.608532, -103.2135728], [20.6149589, -103.2140878], [20.6220255, -103.2134371], [20.626848, -103.2112554], [20.6323905, -103.2108262], [20.6408245, -103.206363], [20.6457483, -103.2041091], [20.6495364, -103.2045751], [20.6528695, -103.2069783], [20.6565639, -103.2126217], [20.6667232, -103.2216339], [20.672492, -103.2273692], [20.6771427, -103.2331782], [20.6809771, -103.2341867], [20.682824, -103.2354098], [20.6837072, -103.2374697], [20.683856, -103.2401337], [20.6840166, -103.2430519], [20.6846991, -103.2471718], [20.6836069, -103.251503], [20.6839363, -103.2530941], [20.6857147, -103.2557516], [20.6863771, -103.2572107], [20.6871801, -103.2595496], [20.6894485, -103.2622962], [20.6911009, -103.2651249], [20.694955, -103.2719914], [20.696882, -103.274223], [20.7034393, -103.2818871], [20.7043996, -103.2854595], [20.7123459, -103.287589], [20.7129331, -103.3000403], [20.7214227, -103.3181935], [20.7208006, -103.3236008], [20.7307612, -103.3506123], [20.7398054, -103.3835535], [20.740791, -103.387293], [20.7401465, -103.4016423], [20.7396933, -103.4027326], [20.71588, -103.42854], [20.71093, -103.43824], [20.7094007, -103.4418754], [20.7076104, -103.4455751], [20.7039043, -103.4487127], [20.6999034, -103.451955], [20.698975, -103.452981], [20.6977197, -103.4538959], [20.697376, -103.454255], [20.697379, -103.455353], [20.697516, -103.456077], [20.69794, -103.45674], [20.70199, -103.46032], [20.7008, -103.46126], [20.699091, -103.462305], [20.698208, -103.462419], [20.6960066, -103.4617394], [20.69468, -103.462], [20.69276, -103.4615], [20.69127, -103.45997], [20.68931, -103.45792], [20.68798, -103.4583], [20.683143, -103.460862], [20.682, -103.462546]]
+                }
+            }
+            'aeropuerto_gdl|estadio_gdl': {
+                principal: {
+                    distancia: '32.2 km',
+                    tiempo: '1h 13 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5), se toma el Blvd. Aeropuerto hacia la carretera México 23/44, continuando por Calz. Lázaro Cárdenas y Av. Vallarta hasta Av. Del Bajío, finalizando hacia el Estadio Guadalajara (Estadio Akron) en El Bajío, Zapopan.',
+                    url: 'https://acortar.link/9eTD9P',
+                    kml: [[20.52685, -103.29879], [20.52837, -103.29812], [20.5302065, -103.2939175], [20.5305255, -103.2930753], [20.531, -103.29266], [20.5317212, -103.292453], [20.53214, -103.29254], [20.5326053, -103.2927856], [20.53293, -103.29326], [20.53342, -103.2941], [20.53392, -103.29455], [20.5454151, -103.3000276], [20.5541822, -103.3041535], [20.5649811, -103.3093463], [20.5760605, -103.3145712], [20.5893587, -103.320912], [20.59713, -103.32445], [20.59827, -103.3244], [20.59927, -103.324], [20.6008812, -103.3227928], [20.60144, -103.32218], [20.60219, -103.3211828], [20.6028797, -103.3197779], [20.6042053, -103.3172567], [20.60479, -103.31648], [20.60579, -103.31578], [20.6076097, -103.3154328], [20.60889, -103.31538], [20.61006, -103.3157332], [20.61104, -103.31638], [20.6151, -103.32033], [20.61593, -103.32115], [20.61651, -103.32148], [20.61732, -103.32174], [20.61989, -103.32156], [20.62235, -103.32137], [20.62302, -103.32169], [20.62405, -103.32243], [20.62449, -103.32314], [20.62481, -103.32558], [20.62525, -103.32755], [20.6297414, -103.334573], [20.6346413, -103.3402593], [20.63778, -103.34385], [20.6393201, -103.3465249], [20.6427337, -103.3528979], [20.6517092, -103.3692701], [20.66039, -103.38541], [20.6641978, -103.3924873], [20.6679, -103.39917], [20.6684, -103.39972], [20.67014, -103.40293], [20.6703613, -103.4037096], [20.6725095, -103.4076364], [20.67483, -103.4119], [20.6751997, -103.4125073], [20.67588, -103.41394], [20.67621, -103.41433], [20.67746, -103.41549], [20.67814, -103.41797], [20.68237, -103.4376], [20.68246, -103.43812], [20.68287, -103.43929], [20.69075, -103.44942], [20.69328, -103.45263], [20.698827, -103.4575255], [20.69979, -103.45836], [20.70022, -103.45865], [20.7021, -103.46029], [20.701933, -103.46058], [20.700004, -103.46191], [20.699091, -103.462305], [20.698208, -103.462419], [20.69705, -103.46205], [20.69636, -103.46178], [20.69569, -103.46171], [20.6948, -103.46196], [20.69439, -103.46192], [20.69361, -103.46169], [20.69276, -103.4615], [20.6918, -103.46067], [20.69041, -103.45898], [20.68955, -103.45826], [20.68849, -103.45813], [20.6863814, -103.4592421], [20.68501, -103.46009], [20.68382, -103.46059], [20.68334, -103.46069], [20.68281, -103.46149], [20.68235, -103.46132]]
+                },
+                secundaria: {
+                    distancia: '38.8 km',
+                    tiempo: '1h 33 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5), se toma el Blvd. Aeropuerto hacia la carretera México 23/44, continuando por Periférico Sur, Av. Aviación y Av. Del Bajío, finalizando hacia el Estadio Guadalajara (Estadio Akron) en El Bajío, Zapopan.',
+                    url: 'https://acortar.link/siUCig',
+                    kml: [[20.5269086, -103.2986989], [20.5278156, -103.2983762], [20.5282041, -103.2981964], [20.52832, -103.29816], [20.52832, -103.29815], [20.52842, -103.29812], [20.52901, -103.29665], [20.52907, -103.29653], [20.52952, -103.29544], [20.52953, -103.2954], [20.53013, -103.29407], [20.53037, -103.29348], [20.53052, -103.29318], [20.53054, -103.29315], [20.53054, -103.29314], [20.5306, -103.29304], [20.53064, -103.29299], [20.53065, -103.29299], [20.53065, -103.29298], [20.53077, -103.29284], [20.531, -103.29266], [20.53119, -103.29257], [20.53134, -103.29252], [20.53151, -103.29248], [20.53159, -103.29247], [20.53184, -103.29247], [20.53201, -103.2925], [20.53214, -103.29254], [20.53237, -103.29264], [20.53265, -103.29287], [20.53279, -103.29302], [20.53293, -103.29326], [20.53314, -103.29371], [20.53325, -103.2939], [20.53342, -103.2941], [20.53365, -103.29428], [20.53374, -103.29433], [20.53382, -103.2944], [20.53392, -103.29455], [20.53399, -103.29459], [20.5341, -103.29463], [20.53745, -103.29621], [20.53794, -103.29646], [20.53804, -103.2965], [20.53813, -103.29655], [20.54812, -103.30128], [20.54898, -103.30171], [20.55488, -103.30449], [20.55593, -103.30501], [20.55596, -103.30502], [20.55894, -103.30645], [20.559, -103.30647], [20.55976, -103.30684], [20.56047, -103.30716], [20.5605, -103.30718], [20.56452, -103.30909], [20.56461, -103.30914], [20.56462, -103.30914], [20.56465, -103.30916], [20.572, -103.31264], [20.57201, -103.31265], [20.57202, -103.31265], [20.5721, -103.31269], [20.57211, -103.31269], [20.57212, -103.3127], [20.57218, -103.31272], [20.57272, -103.313], [20.57514, -103.31413], [20.57571, -103.31442], [20.58485, -103.31875], [20.58616, -103.3194], [20.5902, -103.3213], [20.59061, -103.32151], [20.59134, -103.32185], [20.59149, -103.32184], [20.5916, -103.32181], [20.59168, -103.32177], [20.59174, -103.32171], [20.5918, -103.32163], [20.59185, -103.32155], [20.59186, -103.32147], [20.59186, -103.32141], [20.59184, -103.32129], [20.5918, -103.32116], [20.59174, -103.32108], [20.5917, -103.32104], [20.59162, -103.32098], [20.59159, -103.32097], [20.59149, -103.32095], [20.59143, -103.32095], [20.59136, -103.32096], [20.59129, -103.32098], [20.59102, -103.32113], [20.59079, -103.32151], [20.59078, -103.32152], [20.59077, -103.32154], [20.59077, -103.32155], [20.58973, -103.32312], [20.58929, -103.32392], [20.58921, -103.3241], [20.58897, -103.32454], [20.58893, -103.32463], [20.5878, -103.32677], [20.58715, -103.3279], [20.58397, -103.33373], [20.58396, -103.33376], [20.58388, -103.33389], [20.5819, -103.3375], [20.58164, -103.33801], [20.57649, -103.34745], [20.57634, -103.34779], [20.57623, -103.34813], [20.57612, -103.34866], [20.57609, -103.34895], [20.57609, -103.34938], [20.57629, -103.35239], [20.5763, -103.35245], [20.57676, -103.35853], [20.57695, -103.3595], [20.57709, -103.36003], [20.57718, -103.36032], [20.57902, -103.36746], [20.57903, -103.36753], [20.57905, -103.36759], [20.57911, -103.36787], [20.57911, -103.36788], [20.57948, -103.36929], [20.57949, -103.36935], [20.5795, -103.36938], [20.57951, -103.36945], [20.5797, -103.37021], [20.57996, -103.37111], [20.58008, -103.37147], [20.58044, -103.37236], [20.58091, -103.37326], [20.58093, -103.37328], [20.58335, -103.37754], [20.58412, -103.37884], [20.58418, -103.37896], [20.58451, -103.37953], [20.58455, -103.37962], [20.58486, -103.38012], [20.58493, -103.38027], [20.58518, -103.38072], [20.58538, -103.38104], [20.58566, -103.38143], [20.58585, -103.38167], [20.58617, -103.38201], [20.58639, -103.38221], [20.58752, -103.38315], [20.58776, -103.38337], [20.5879, -103.38347], [20.58793, -103.3835], [20.58868, -103.3841], [20.59063, -103.38574], [20.59113, -103.38613], [20.59742, -103.39139], [20.59815, -103.39203], [20.59816, -103.39203], [20.59891, -103.39278], [20.60078, -103.39485], [20.60094, -103.39501], [20.60347, -103.3978], [20.60356, -103.39788], [20.60374, -103.3981], [20.60512, -103.39962], [20.60538, -103.39987], [20.6062, -103.40081], [20.60638, -103.40106], [20.60638, -103.40107], [20.60643, -103.40113], [20.60675, -103.40158], [20.60677, -103.40162], [20.60695, -103.4019], [20.60715, -103.40227], [20.60719, -103.40237], [20.6072, -103.40238], [20.60731, -103.40261], [20.60749, -103.40309], [20.60758, -103.40338], [20.60788, -103.40454], [20.60895, -103.40905], [20.60924, -103.41017], [20.60926, -103.41032], [20.60927, -103.41035], [20.60931, -103.41055], [20.61001, -103.41338], [20.61007, -103.41369], [20.6104, -103.41492], [20.61129, -103.41865], [20.61137, -103.41892], [20.61191, -103.42123], [20.61214, -103.4221], [20.61223, -103.42234], [20.61224, -103.42238], [20.61235, -103.42268], [20.61247, -103.42291], [20.61255, -103.42309], [20.61264, -103.42325], [20.61274, -103.42347], [20.61341, -103.42459], [20.61397, -103.42558], [20.61469, -103.42675], [20.61511, -103.42748], [20.61543, -103.42796], [20.61556, -103.42811], [20.61575, -103.42828], [20.61628, -103.42863], [20.61661, -103.4288], [20.61679, -103.42892], [20.61708, -103.42906], [20.61741, -103.42925], [20.61816, -103.42963], [20.6188, -103.42999], [20.62035, -103.43081], [20.62053, -103.43094], [20.62092, -103.43119], [20.62231, -103.43189], [20.62239, -103.43194], [20.62354, -103.43255], [20.62367, -103.43263], [20.62404, -103.43283], [20.62416, -103.43288], [20.62524, -103.43347], [20.62535, -103.43352], [20.62606, -103.4339], [20.62646, -103.43409], [20.62689, -103.43435], [20.62725, -103.43451], [20.62734, -103.43454], [20.62744, -103.43459], [20.63525, -103.43785], [20.63529, -103.43786], [20.63594, -103.43813], [20.6363, -103.43826], [20.63667, -103.43843], [20.63768, -103.43883], [20.63977, -103.43972], [20.6422, -103.4407], [20.64312, -103.44112], [20.64329, -103.44118], [20.64583, -103.44224], [20.6459, -103.44228], [20.64689, -103.4427], [20.64723, -103.44283], [20.64754, -103.44293], [20.64787, -103.44309], [20.64871, -103.44338], [20.65254, -103.44499], [20.65337, -103.44523], [20.65521, -103.446], [20.65654, -103.44664], [20.65753, -103.44705], [20.65762, -103.44708], [20.65853, -103.44748], [20.65904, -103.44768], [20.66003, -103.44817], [20.66617, -103.45073], [20.66621, -103.45074], [20.66622, -103.45075], [20.66844, -103.45167], [20.66881, -103.45185], [20.66895, -103.45187], [20.66945, -103.45219], [20.66996, -103.45262], [20.67043, -103.45307], [20.6714, -103.45387], [20.6714, -103.45388], [20.67248, -103.45469], [20.67263, -103.45477], [20.67288, -103.45487], [20.67303, -103.45492], [20.6735, -103.45502], [20.67367, -103.45504], [20.67399, -103.45505], [20.67484, -103.45503], [20.67732, -103.4551], [20.68109, -103.45509], [20.68247, -103.45512], [20.68265, -103.45505], [20.68304, -103.45499], [20.68325, -103.45493], [20.6853, -103.45496], [20.68539, -103.45495], [20.68686, -103.45496], [20.68701, -103.45493], [20.68716, -103.45492], [20.68722, -103.4549], [20.68728, -103.4549], [20.68737, -103.45488], [20.68752, -103.45486], [20.68765, -103.45481], [20.68779, -103.45481], [20.68816, -103.45484], [20.68827, -103.45487], [20.6885, -103.45489], [20.68858, -103.45489], [20.68893, -103.45493], [20.68915, -103.45509], [20.68922, -103.45516], [20.68927, -103.45519], [20.68948, -103.45523], [20.68974, -103.45526], [20.69009, -103.45527], [20.6905, -103.45531], [20.69057, -103.4553], [20.69068, -103.4553], [20.69103, -103.45527], [20.69133, -103.45529], [20.69135, -103.4553], [20.69139, -103.45531], [20.69144, -103.45536], [20.69145, -103.45536], [20.69149, -103.45542], [20.6915, -103.45548], [20.6915, -103.45554], [20.69149, -103.45554], [20.69149, -103.45562], [20.69146, -103.45568], [20.69142, -103.45572], [20.69138, -103.45575], [20.69126, -103.45576], [20.69101, -103.45571], [20.6908, -103.45571], [20.69073, -103.45573], [20.69064, -103.45574], [20.68966, -103.45569], [20.68948, -103.4557], [20.68941, -103.45571], [20.68933, -103.45574], [20.68931, -103.45576], [20.6893, -103.45576], [20.68926, -103.45579], [20.68909, -103.45595], [20.68902, -103.45605], [20.68898, -103.45614], [20.68894, -103.45631], [20.68893, -103.45676], [20.68894, -103.45714], [20.68896, -103.45731], [20.68897, -103.45734], [20.68898, -103.45741], [20.689, -103.45747], [20.68904, -103.45756], [20.68916, -103.45777], [20.68931, -103.45792], [20.68954, -103.45806], [20.68991, -103.45824], [20.69007, -103.45833], [20.69036, -103.4586], [20.69059, -103.45886], [20.69075, -103.459], [20.69109, -103.45933], [20.69175, -103.46022], [20.69219, -103.46089], [20.69234, -103.46104], [20.69249, -103.46116], [20.69269, -103.46129], [20.69283, -103.46136], [20.69304, -103.46143], [20.69324, -103.46148], [20.69336, -103.4615], [20.69375, -103.46153], [20.6943, -103.4615], [20.69438, -103.46152], [20.69448, -103.46158], [20.69454, -103.46152], [20.69464, -103.46148], [20.69469, -103.46148], [20.69475, -103.4615], [20.69481, -103.46153], [20.69485, -103.46157], [20.69486, -103.46159], [20.69488, -103.46161], [20.6949, -103.46166], [20.6949, -103.46169], [20.69491, -103.46171], [20.69491, -103.4618], [20.69487, -103.46189], [20.69487, -103.4619], [20.69484, -103.46193], [20.69483, -103.46193], [20.6948, -103.46196], [20.69468, -103.462], [20.69465, -103.462], [20.69462, -103.46199], [20.69459, -103.46199], [20.69456, -103.46198], [20.6945, -103.46194], [20.69448, -103.46192], [20.69448, -103.46191], [20.69439, -103.46192], [20.69432, -103.46192], [20.69425, -103.4619], [20.69413, -103.46184], [20.69403, -103.46181], [20.69396, -103.46178], [20.69375, -103.46171], [20.69361, -103.46169], [20.69353, -103.46167], [20.69323, -103.46163], [20.69291, -103.46156], [20.69259, -103.46142], [20.69242, -103.46132], [20.6923, -103.46121], [20.69202, -103.46092], [20.6918, -103.46067], [20.69127, -103.45997], [20.69083, -103.45947], [20.69074, -103.45935], [20.6901, -103.45865], [20.68992, -103.45848], [20.68972, -103.45835], [20.68955, -103.45826], [20.68934, -103.45818], [20.68917, -103.45813], [20.68899, -103.45811], [20.68873, -103.4581], [20.68849, -103.45813], [20.68832, -103.45817], [20.68798, -103.4583], [20.68746, -103.45859], [20.68536, -103.4599], [20.68501, -103.46009], [20.68495, -103.46013], [20.68466, -103.46028], [20.6842, -103.46047], [20.68412, -103.46049], [20.68382, -103.46059], [20.68334, -103.46069], [20.68299, -103.46073], [20.68252, -103.46074], [20.68235, -103.46073], [20.68189, -103.46065], [20.68177, -103.46064], [20.68162, -103.46061], [20.68138, -103.46061], [20.6812, -103.46079], [20.68117, -103.46083], [20.68117, -103.46084], [20.68115, -103.4609], [20.68114, -103.46095], [20.68114, -103.46119], [20.68116, -103.46129], [20.68094, -103.46141], [20.68083, -103.46148], [20.68069, -103.46162], [20.68045, -103.46193], [20.68044, -103.46195], [20.68042, -103.46197], [20.68038, -103.46203], [20.68035, -103.46212], [20.68035, -103.46224], [20.68038, -103.46241], [20.68038, -103.46267], [20.68041, -103.46299], [20.68051, -103.46332], [20.68054, -103.46336], [20.6806, -103.46346], [20.68061, -103.46346], [20.68074, -103.4636], [20.68079, -103.46364], [20.68094, -103.46373], [20.68113, -103.46382], [20.68122, -103.46384], [20.68135, -103.46388]]
+                },
+                terciaria: {
+                    distancia: '52.2 km',
+                    tiempo: '1h 17 min',
+                    descripcion: 'Desde el Aeropuerto Internacional de Guadalajara (Carr. Guadalajara-Chapala km 17.5), se toma el Blvd. Aeropuerto hacia la carretera México 23/44, continuando por Periférico Oriente, Av. Vallarta y Av. Del Bajío, finalizando hacia el Estadio Guadalajara (Estadio Akron) en El Bajío, Zapopan.',
+                    url: 'https://acortar.link/DRtjFB',
+                    kml: [[20.5267799, -103.2987463], [20.52829, -103.2982], [20.53013, -103.29407], [20.53077, -103.29284], [20.53151, -103.29248], [20.5322978, -103.2925939], [20.5328805, -103.2931732], [20.53399, -103.29459], [20.5346387, -103.2948791], [20.535342, -103.2949649], [20.5356334, -103.2943856], [20.5336943, -103.2891392], [20.5319762, -103.2846009], [20.5320566, -103.2758461], [20.5309586, -103.2703312], [20.5266583, -103.2584436], [20.527475, -103.2435738], [20.5319762, -103.2345616], [20.540001, -103.2295616], [20.565483, -103.222844], [20.5776918, -103.2171161], [20.5803837, -103.2168157], [20.5865979, -103.2187871], [20.596079, -103.2199243], [20.608532, -103.2135728], [20.6149589, -103.2140878], [20.6220255, -103.2134371], [20.626848, -103.2112554], [20.6323905, -103.2108262], [20.6408245, -103.206363], [20.6457483, -103.2041091], [20.6495364, -103.2045751], [20.6528695, -103.2069783], [20.6565639, -103.2126217], [20.6667232, -103.2216339], [20.672492, -103.2273692], [20.6771427, -103.2331782], [20.6809771, -103.2341867], [20.682824, -103.2354098], [20.6837072, -103.2374697], [20.683856, -103.2401337], [20.6840166, -103.2430519], [20.6846991, -103.2471718], [20.6836069, -103.251503], [20.6839363, -103.2530941], [20.6857147, -103.2557516], [20.6863771, -103.2572107], [20.6871801, -103.2595496], [20.6894485, -103.2622962], [20.6911009, -103.2651249], [20.694955, -103.2719914], [20.696882, -103.274223], [20.7034393, -103.2818871], [20.7043996, -103.2854595], [20.7123459, -103.287589], [20.7129331, -103.3000403], [20.7214227, -103.3181935], [20.7208006, -103.3236008], [20.7307612, -103.3506123], [20.7398054, -103.3835535], [20.740791, -103.387293], [20.7401465, -103.4016423], [20.7396933, -103.4027326], [20.71588, -103.42854], [20.71093, -103.43824], [20.7094007, -103.4418754], [20.7076104, -103.4455751], [20.7039043, -103.4487127], [20.6999034, -103.451955], [20.698975, -103.452981], [20.6977197, -103.4538959], [20.697376, -103.454255], [20.697379, -103.455353], [20.697516, -103.456077], [20.69794, -103.45674], [20.70199, -103.46032], [20.7008, -103.46126], [20.699091, -103.462305], [20.698208, -103.462419], [20.6960066, -103.4617394], [20.69468, -103.462], [20.69276, -103.4615], [20.69127, -103.45997], [20.68931, -103.45792], [20.68798, -103.4583], [20.683143, -103.460862], [20.682, -103.462546]]
+                }
+            }
+        };
+
+
+
+
+        let map;
+        let origenMarker, destinoMarker;
+
+        // Inicializar mapa
+        function initMap() {
+            map = L.map('map').setView([20.6597, -103.3496], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Llenar selectores
+            Object.entries(UBICACIONES).forEach(([id, ubicacion]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = ubicacion.nombre;
+                document.getElementById('origen').appendChild(option);
+
+                const option2 = document.createElement('option');
+                option2.value = id;
+                option2.textContent = ubicacion.nombre;
+                document.getElementById('destino').appendChild(option2);
+            });
+        }
+
+        function buscarRutas() {
+            const origen = document.getElementById('origen').value;
+            const destino = document.getElementById('destino').value;
+
+            if (!origen || !destino) {
+                alert('Por favor selecciona un origen y un destino');
+                return;
+            }
+
+            if (origen === destino) {
+                alert('El origen y el destino no pueden ser iguales');
+                return;
+            }
+
+            const rutaKey = `${origen}|${destino}`;
+            const rutas = RUTAS[rutaKey];
+
+            if (!rutas) {
+                alert('No hay rutas preestablecidas para esta combinación');
+                return;
+            }
+
+            // Mostrar rutas
+            mostrarRutas(origen, destino, rutas);
+
+            // Actualizar mapa
+            actualizarMapa(origen, destino, rutas);
+        }
+
+        function mostrarRutas(origen, destino, rutas) {
+            const origenNombre = UBICACIONES[origen].nombre;
+            const destinoNombre = UBICACIONES[destino].nombre;
+
+            document.getElementById('routesTitle').textContent = `${origenNombre} → ${destinoNombre}`;
+
+            let html = '';
+            const tipos = ['principal', 'secundaria', 'terciaria'];
+            const emojis = { principal: '🔴', secundaria: '🔵', terciaria: '🟢' };
+
+            tipos.forEach(tipo => {
+                const ruta = rutas[tipo];
+                html += `
+                    <div class="route-card ${tipo}">
+                        <div class="route-title">${emojis[tipo]} Ruta ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</div>
+                        <div class="route-info">
+                            <div class="route-info-item">
+                                <span>📍</span>
+                                <span>${ruta.distancia}</span>
+                            </div>
+                            <div class="route-info-item">
+                                <span>⏱️</span>
+                                <span>${ruta.tiempo}</span>
+                            </div>
+                        </div>
+                        <div class="route-description">${ruta.descripcion}</div>
+                        <a href="${ruta.url}" target="_blank" rel="noopener noreferrer" class="route-link">
+                            Abrir en Google Maps
+                        </a>
+                    </div>
+                `;
+            });
+
+            document.getElementById('routesContainer').innerHTML = html;
+            document.getElementById('routesSection').classList.add('active');
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        let polylines = [];
+
+        function actualizarMapa(origen, destino, rutas) {
+            const origenData = UBICACIONES[origen];
+            const destinoData = UBICACIONES[destino];
+
+            // Limpiar marcadores anteriores
+            if (origenMarker) map.removeLayer(origenMarker);
+            if (destinoMarker) map.removeLayer(destinoMarker);
+
+            // Limpiar polylines anteriores
+            polylines.forEach(polyline => map.removeLayer(polyline));
+            polylines = [];
+
+            // Agregar nuevos marcadores
+            origenMarker = L.circleMarker([origenData.lat, origenData.lng], {
+                radius: 8,
+                fillColor: '#3b82f6',
+                color: '#1e40af',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map).bindPopup(`<strong>Origen</strong><br>${origenData.nombre}`);
+
+            destinoMarker = L.circleMarker([destinoData.lat, destinoData.lng], {
+                radius: 8,
+                fillColor: '#f97316',
+                color: '#c2410c',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map).bindPopup(`<strong>Destino</strong><br>${destinoData.nombre}`);
+
+            // Dibujar líneas KML de las rutas
+            // Principal: Verde Oscuro, línea continua, grueso
+            // Secundaria: Naranja Oscuro, línea discontinua, grueso
+            // Terciaria: Morada, puntos continuos, grueso
+            const estilos = {
+                principal: { color: '#00AC00', weight: 6, opacity: 0.85, dashArray: '' },
+                secundaria: { color: '#3534CE', weight: 4, opacity: 0.85, dashArray: '5, 5' },
+                terciaria: { color: '#FE00D2', weight: 3, opacity: 0.85, dashArray: '2, 4' }
+            };
+
+            const tipos = ['principal', 'secundaria', 'terciaria'];
+
+            tipos.forEach((tipo) => {
+                if (rutas[tipo] && rutas[tipo].kml) {
+                    const polyline = L.polyline(rutas[tipo].kml, estilos[tipo]).addTo(map);
+                    polylines.push(polyline);
+                }
+            });
+
+            // Ajustar vista del mapa
+            const group = new L.featureGroup([origenMarker, destinoMarker]);
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
+
+        // Inicializar cuando carga la página
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+</body>
+</html>
